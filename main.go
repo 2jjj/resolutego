@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"os/signal"
@@ -9,17 +10,23 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-func main() {
-	// Substitua pelo seu token do bot
-	Token := ""
+type Config struct {
+	Token string `json:"token"`
+}
 
+func main() {
 	// Cria uma nova sessão do Discord
-	dg, err := discordgo.New("Bot " + Token)
+	config, err := loadConfig("config.json")
+	if err != nil {
+		fmt.Println("Erro ao carregar configurações:", err)
+		return
+	}
+
+	dg, err := discordgo.New("Bot " + config.Token)
 	if err != nil {
 		fmt.Println("Erro ao criar sessão do Discord:", err)
 		return
 	}
-
 	// Adiciona um handler para responder a mensagens
 	dg.AddHandler(messageCreate)
 
@@ -38,6 +45,23 @@ func main() {
 
 	// Fecha a sessão
 	dg.Close()
+}
+
+func loadConfig(filename string) (*Config, error) {
+	file, err := os.Open(filename)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	decoder := json.NewDecoder(file)
+	config := &Config{}
+	err = decoder.Decode(config)
+	if err != nil {
+		return nil, err
+	}
+
+	return config, nil
 }
 
 // Handler para mensagens recebidas

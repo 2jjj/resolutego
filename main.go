@@ -11,7 +11,7 @@ import (
 
 func main() {
 	// Substitua pelo seu token do bot
-	Token := "OTUyNzA5NDk5MzE4MzE3MTI2.G7eI5w.GMXSQuFILgFlodLqdc9TN2a6-k4fIUyXGjkEO0"
+	Token := ""
 
 	// Cria uma nova sessão do Discord
 	dg, err := discordgo.New("Bot " + Token)

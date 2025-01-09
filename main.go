@@ -7,6 +7,8 @@ import (
 	"os/signal"
 	"syscall"
 
+	"resolutebot/handler"
+
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -28,7 +30,7 @@ func main() {
 		return
 	}
 	// Adiciona um handler para responder a mensagens
-	dg.AddHandler(messageCreate)
+	dg.AddHandler(handler.PingHandler)
 
 	// Abre uma conexão com o Discord
 	err = dg.Open()
@@ -62,20 +64,4 @@ func loadConfig(filename string) (*Config, error) {
 	}
 
 	return config, nil
-}
-
-// Handler para mensagens recebidas
-func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
-	// Ignora mensagens enviadas pelo próprio bot
-	if m.Author.ID == s.State.User.ID {
-		return
-	}
-
-	// Responde a mensagens específicas
-	if m.Content == "ping" {
-		s.ChannelMessageSend(m.ChannelID, "pong!")
-	} else if m.Content == "checksaldos" {
-		s.ChannelMessageSend(m.ChannelID, "verificando saldos")
-        
-	}
 }
